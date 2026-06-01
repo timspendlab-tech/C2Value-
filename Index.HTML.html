@@ -1,0 +1,1543 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>C2Value — Transforming Costs into Value</title>
+  <meta name="description" content="C2Value is dé expert op het gebied van inkoopbesparingen en procesoptimalisaties. No cure, no pay." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,300;1,400&family=Fraunces:opsz,wght@9..144,700;9..144,800;9..144,900&display=swap" rel="stylesheet" />
+
+  <style>
+    /* ── RESET & VARIABLES ───────────────────────────────────── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      /* C2Value Brand Colors — preserved exactly */
+      --navy:        #25455E;
+      --navy-dark:   #1a3347;
+      --navy-deeper: #0f2030;
+      --mint:        #A8C6C0;
+      --mint-light:  #c4dbd6;
+      --mint-dark:   #7aaba3;
+      --mint-pale:   #e8f3f1;
+      --gold:        #C8A83E;
+      --gold-light:  #dfc06a;
+      --gold-pale:   #fdf6e3;
+      --sand:        #E6E6D8;
+      --mid-blue:    #596F80;
+      --white:       #FFFFFF;
+
+      /* Light theme surfaces */
+      --bg-page:     #f7f8fa;
+      --bg-section:  #ffffff;
+      --bg-alt:      #f0f4f7;
+      --text-primary:  #1a2d3d;
+      --text-secondary: #4a6070;
+      --text-muted:    #7a8f9d;
+      --border-light:  rgba(37,69,94,.1);
+      --border-mid:    rgba(37,69,94,.18);
+
+      --radius:      14px;
+      --radius-lg:   24px;
+      --trans:       0.35s cubic-bezier(.4,0,.2,1);
+      --shadow-sm:   0 2px 12px rgba(37,69,94,.08);
+      --shadow-md:   0 8px 30px rgba(37,69,94,.12);
+      --shadow-lg:   0 20px 60px rgba(37,69,94,.15);
+
+      --font-body:    'Aptos', 'Aptos Display', 'Plus Jakarta Sans', sans-serif;
+      --font-heading: 'Aptos Display', 'Aptos', 'Plus Jakarta Sans', sans-serif;
+      --font-accent:  'Fraunces', Georgia, serif;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: var(--font-body);
+      background: var(--bg-page);
+      color: var(--text-primary);
+      overflow-x: hidden;
+      line-height: 1.65;
+    }
+
+    /* ── CURSOR ─────────────────────────────────────────────── */
+    .cursor-dot {
+      position: fixed; top: 0; left: 0; width: 7px; height: 7px;
+      background: var(--navy); border-radius: 50%; pointer-events: none; z-index: 9999;
+      transform: translate(-50%, -50%);
+      transition: transform 0.1s ease;
+    }
+    .cursor-ring {
+      position: fixed; top: 0; left: 0; width: 34px; height: 34px;
+      border: 1.5px solid rgba(37,69,94,.3); border-radius: 50%; pointer-events: none; z-index: 9998;
+      transform: translate(-50%, -50%);
+      transition: transform 0.18s ease, width 0.25s ease, height 0.25s ease, border-color 0.25s ease;
+    }
+
+    /* ── PROGRESS BAR ────────────────────────────────────────── */
+    .progress-bar {
+      position: fixed; top: 0; left: 0; height: 3px; z-index: 200;
+      background: linear-gradient(90deg, var(--navy), var(--mint-dark));
+      width: 0%; transition: width .1s linear;
+    }
+
+    /* ── NAV ─────────────────────────────────────────────────── */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0 5vw; height: 72px;
+      background: rgba(255,255,255,0.92);
+      backdrop-filter: blur(20px) saturate(180%);
+      border-bottom: 1px solid rgba(37,69,94,.08);
+      transition: box-shadow var(--trans), background var(--trans);
+    }
+    nav.scrolled {
+      background: rgba(255,255,255,0.97);
+      box-shadow: 0 2px 24px rgba(37,69,94,.1);
+    }
+
+    .logo {
+      font-family: var(--font-heading);
+      font-weight: 800; font-size: 1.5rem; letter-spacing: -.025em;
+      color: var(--navy); text-decoration: none;
+      display: flex; align-items: center; gap: .2rem;
+    }
+    .logo-c2 { color: var(--navy); }
+    .logo-value { color: var(--gold); }
+    .logo-dot {
+      width: 7px; height: 7px; background: var(--gold); border-radius: 50%;
+      display: inline-block; margin-left: .1rem; margin-bottom: .6rem;
+      animation: glow-dot 2.5s ease-in-out infinite;
+    }
+    @keyframes glow-dot {
+      0%,100% { box-shadow: 0 0 0 0 rgba(200,168,62,.5); }
+      50%      { box-shadow: 0 0 0 5px rgba(200,168,62,0); }
+    }
+
+    .nav-links { display: flex; gap: 2.2rem; list-style: none; }
+    .nav-links a {
+      color: var(--text-secondary); font-size: .875rem; font-weight: 600;
+      text-decoration: none; letter-spacing: .01em;
+      transition: color var(--trans);
+      position: relative; padding-bottom: 2px;
+    }
+    .nav-links a::after {
+      content: ''; position: absolute; bottom: -3px; left: 0; right: 100%; height: 2px;
+      background: var(--navy); border-radius: 2px; transition: right var(--trans);
+    }
+    .nav-links a:hover { color: var(--navy); }
+    .nav-links a:hover::after { right: 0; }
+
+    .nav-cta {
+      background: var(--navy); color: var(--white);
+      padding: .55rem 1.4rem; border-radius: 100px;
+      font-size: .875rem; font-weight: 700; text-decoration: none;
+      letter-spacing: .01em;
+      transition: background var(--trans), transform var(--trans), box-shadow var(--trans);
+      box-shadow: 0 4px 14px rgba(37,69,94,.2);
+    }
+    .nav-cta:hover {
+      background: var(--navy-dark);
+      transform: translateY(-2px);
+      box-shadow: 0 8px 24px rgba(37,69,94,.28);
+    }
+
+    .hamburger { display: none; flex-direction: column; gap: 5px; cursor: pointer; }
+    .hamburger span { width: 24px; height: 2px; background: var(--navy); border-radius: 2px; transition: var(--trans); }
+
+    /* ── HERO ─────────────────────────────────────────────────── */
+    .hero {
+      min-height: 100vh;
+      display: flex; align-items: center;
+      padding: 120px 5vw 90px;
+      position: relative; overflow: hidden;
+      background: linear-gradient(155deg, #ffffff 0%, #eef4f7 45%, #e8f3f1 100%);
+    }
+    .hero::before {
+      content: '';
+      position: absolute; inset: 0; z-index: 0;
+      background:
+        radial-gradient(ellipse 70% 60% at 80% 30%, rgba(168,198,192,.22) 0%, transparent 60%),
+        radial-gradient(ellipse 50% 50% at 20% 80%, rgba(200,168,62,.08) 0%, transparent 60%);
+    }
+    .hero-grid {
+      position: absolute; inset: 0; z-index: 0; opacity: .04;
+      background-image:
+        linear-gradient(rgba(37,69,94,1) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(37,69,94,1) 1px, transparent 1px);
+      background-size: 56px 56px;
+    }
+    /* Large decorative number */
+    .hero-watermark {
+      position: absolute; right: 6vw; bottom: 8vh;
+      font-family: var(--font-accent); font-size: clamp(10rem, 22vw, 22rem);
+      font-weight: 900; line-height: 1;
+      color: rgba(37,69,94,.04); pointer-events: none; z-index: 0;
+      letter-spacing: -.05em;
+    }
+    .hero-accent-line {
+      position: absolute; top: 0; right: 22%; width: 1px; height: 100%;
+      background: linear-gradient(to bottom, transparent, rgba(168,198,192,.3) 40%, rgba(200,168,62,.25) 65%, transparent);
+      z-index: 0;
+    }
+
+    .hero-content { position: relative; z-index: 1; max-width: 700px; }
+
+    .hero-badge {
+      display: inline-flex; align-items: center; gap: .55rem;
+      background: rgba(168,198,192,.18); border: 1px solid rgba(168,198,192,.5);
+      color: #4d8f87; padding: .4rem 1.1rem; border-radius: 100px;
+      font-size: .75rem; font-weight: 700; letter-spacing: .08em; text-transform: uppercase;
+      margin-bottom: 2rem;
+      opacity: 0; animation: fadeUp .7s .1s forwards;
+    }
+    .hero-badge-dot {
+      width: 7px; height: 7px; background: var(--mint-dark); border-radius: 50%;
+      animation: pulse 2.2s infinite;
+    }
+    @keyframes pulse {
+      0%,100% { opacity: 1; transform: scale(1); }
+      50%      { opacity: .4; transform: scale(1.5); }
+    }
+
+    h1 {
+      font-family: var(--font-heading);
+      font-size: clamp(2.8rem, 6vw, 5.2rem);
+      font-weight: 800; line-height: 1.04; letter-spacing: -.03em;
+      color: var(--navy-deeper);
+      opacity: 0; animation: fadeUp .75s .22s forwards;
+    }
+    h1 em {
+      font-style: normal;
+      font-family: var(--font-accent);
+      font-weight: 800; color: var(--gold);
+      position: relative;
+    }
+    h1 em::after {
+      content: '';
+      position: absolute; bottom: 4px; left: 0; right: 0; height: 3px;
+      background: linear-gradient(90deg, var(--gold), rgba(200,168,62,.2));
+      border-radius: 2px;
+    }
+
+    .hero-sub {
+      margin-top: 1.8rem;
+      font-size: 1.1rem; line-height: 1.8; color: var(--text-secondary); max-width: 540px;
+      opacity: 0; animation: fadeUp .75s .38s forwards;
+    }
+
+    .hero-actions {
+      margin-top: 2.6rem; display: flex; gap: 1rem; flex-wrap: wrap;
+      opacity: 0; animation: fadeUp .75s .52s forwards;
+    }
+
+    .btn-primary {
+      background: var(--navy); color: var(--white);
+      padding: .9rem 2rem; border-radius: 100px;
+      font-weight: 700; font-size: .95rem; text-decoration: none;
+      font-family: var(--font-body);
+      transition: background var(--trans), transform var(--trans), box-shadow var(--trans);
+      box-shadow: 0 4px 18px rgba(37,69,94,.22);
+    }
+    .btn-primary:hover {
+      background: var(--navy-dark);
+      transform: translateY(-3px);
+      box-shadow: 0 10px 32px rgba(37,69,94,.32);
+    }
+
+    .btn-ghost {
+      border: 2px solid rgba(37,69,94,.2); color: var(--navy);
+      padding: .88rem 2rem; border-radius: 100px;
+      font-weight: 600; font-size: .95rem; text-decoration: none;
+      font-family: var(--font-body);
+      background: rgba(255,255,255,.6);
+      transition: border-color var(--trans), background var(--trans), transform var(--trans), box-shadow var(--trans);
+    }
+    .btn-ghost:hover {
+      border-color: var(--navy);
+      background: rgba(255,255,255,1);
+      transform: translateY(-3px);
+      box-shadow: 0 6px 20px rgba(37,69,94,.12);
+    }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(28px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    .scroll-hint {
+      position: absolute; bottom: 3rem; left: 5vw; z-index: 1;
+      display: flex; align-items: center; gap: .7rem;
+      color: var(--text-muted); font-size: .75rem; letter-spacing: .06em; text-transform: uppercase;
+      opacity: 0; animation: fadeUp .75s .9s forwards;
+    }
+    .scroll-line {
+      width: 36px; height: 1px; background: var(--text-muted);
+      animation: line-grow 2s ease-in-out infinite;
+    }
+    @keyframes line-grow {
+      0%,100% { width: 18px; opacity: .4; }
+      50%      { width: 46px; opacity: .9; }
+    }
+
+    /* ── STATS BAR ─────────────────────────────────────────── */
+    .stats-bar {
+      background: var(--navy);
+      padding: 3.5rem 5vw;
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 2rem;
+      position: relative; overflow: hidden;
+    }
+    .stats-bar::before {
+      content: '';
+      position: absolute; top: 0; left: 0; right: 0; height: 3px;
+      background: linear-gradient(90deg, var(--gold), var(--mint-dark), var(--gold));
+    }
+
+    .stat-item { text-align: center; position: relative; }
+    .stat-item::after {
+      content: '';
+      position: absolute; right: 0; top: 15%; bottom: 15%;
+      width: 1px; background: rgba(255,255,255,.1);
+    }
+    .stat-item:last-child::after { display: none; }
+
+    .stat-number {
+      font-family: var(--font-accent);
+      font-size: 2.8rem; font-weight: 800; color: var(--gold);
+      line-height: 1; letter-spacing: -.02em;
+    }
+    .stat-label {
+      margin-top: .5rem; font-size: .8rem;
+      color: rgba(255,255,255,.6); letter-spacing: .02em;
+    }
+
+    /* ── SECTION SHARED ──────────────────────────────────────── */
+    section { padding: 100px 5vw; }
+
+    .section-tag {
+      display: inline-flex; align-items: center; gap: .45rem;
+      color: var(--mint-dark); font-size: .72rem; font-weight: 700;
+      letter-spacing: .12em; text-transform: uppercase; margin-bottom: 1rem;
+    }
+    .section-tag::before {
+      content: '';
+      width: 18px; height: 2px; background: var(--mint-dark); border-radius: 2px;
+    }
+
+    h2 {
+      font-family: var(--font-heading);
+      font-size: clamp(2rem, 3.8vw, 3rem);
+      font-weight: 800; line-height: 1.1; letter-spacing: -.025em;
+      color: var(--navy-deeper);
+    }
+    h2 em {
+      font-style: normal;
+      font-family: var(--font-accent);
+      color: var(--gold);
+    }
+
+    .section-intro {
+      color: var(--text-secondary);
+      font-size: 1.05rem; line-height: 1.8; max-width: 520px; margin-top: 1rem;
+    }
+
+    /* ── AANPAK ──────────────────────────────────────────────── */
+    .approach { background: var(--bg-section); }
+    .approach-grid {
+      display: grid; grid-template-columns: 1fr 1fr;
+      gap: 5rem; align-items: start; margin-top: 4rem;
+    }
+
+    .steps { display: flex; flex-direction: column; gap: 0; }
+    .step {
+      display: flex; gap: 1.8rem; align-items: flex-start;
+      padding: 1.8rem 1rem 1.8rem 0; border-bottom: 1px solid var(--border-light);
+      cursor: default; position: relative;
+      transition: padding-left var(--trans), background var(--trans);
+      border-radius: var(--radius);
+    }
+    .step:hover { padding-left: 1rem; background: var(--bg-alt); padding-right: 1rem; }
+    .step:last-child { border-bottom: none; }
+
+    .step-num {
+      font-family: var(--font-accent); font-weight: 700;
+      font-size: 1.5rem; color: var(--gold); min-width: 2.5rem;
+      opacity: .5; transition: opacity var(--trans);
+      line-height: 1;
+    }
+    .step:hover .step-num { opacity: 1; }
+    .step-body h3 {
+      font-family: var(--font-heading); font-weight: 700;
+      font-size: 1.05rem; margin-bottom: .45rem; color: var(--navy-deeper);
+    }
+    .step-body p { color: var(--text-secondary); font-size: .9rem; line-height: 1.7; }
+
+    .approach-visual {
+      background: linear-gradient(145deg, var(--navy) 0%, var(--navy-dark) 100%);
+      border-radius: var(--radius-lg);
+      padding: 2.6rem; position: relative; overflow: hidden;
+      box-shadow: var(--shadow-lg);
+    }
+    .approach-visual::before {
+      content: '';
+      position: absolute; top: -80px; right: -80px;
+      width: 280px; height: 280px; border-radius: 50%;
+      background: radial-gradient(circle, rgba(168,198,192,.2), transparent 65%);
+    }
+    .approach-visual::after {
+      content: '';
+      position: absolute; bottom: -60px; left: -60px;
+      width: 200px; height: 200px; border-radius: 50%;
+      background: radial-gradient(circle, rgba(200,168,62,.12), transparent 65%);
+    }
+    .visual-label {
+      font-family: var(--font-heading); font-weight: 700;
+      font-size: .75rem; color: var(--mint); letter-spacing: .12em;
+      text-transform: uppercase; margin-bottom: 1.6rem;
+      position: relative; z-index: 1;
+    }
+    .visual-tag {
+      display: inline-block; margin: .28rem;
+      background: rgba(255,255,255,.1); border: 1px solid rgba(255,255,255,.18);
+      color: rgba(255,255,255,.85); padding: .42rem .95rem; border-radius: 100px;
+      font-size: .8rem; font-weight: 500;
+      transition: background var(--trans), border-color var(--trans), color var(--trans), transform var(--trans);
+      position: relative; z-index: 1;
+    }
+    .visual-tag:hover {
+      background: rgba(168,198,192,.25); border-color: var(--mint);
+      color: var(--white); transform: translateY(-2px);
+    }
+    .track-record-box {
+      margin-top: 2rem; padding: 1.5rem;
+      background: rgba(200,168,62,.12); border: 1px solid rgba(200,168,62,.3);
+      border-radius: var(--radius); position: relative; z-index: 1;
+    }
+    .track-record-box .tr-label {
+      color: var(--gold); font-weight: 700; font-size: .82rem; margin-bottom: .4rem;
+    }
+    .track-record-box p {
+      color: rgba(255,255,255,.65); font-size: .85rem; line-height: 1.65;
+    }
+
+    /* ── FOCUS AREAS ─────────────────────────────────────────── */
+    .focusgebieden { background: var(--bg-alt); }
+    .focus-cards {
+      display: grid; grid-template-columns: repeat(3, 1fr);
+      gap: 1.5rem; margin-top: 3.5rem;
+    }
+
+    .card {
+      background: var(--bg-section);
+      border: 1.5px solid var(--border-light); border-radius: var(--radius-lg);
+      padding: 2.4rem 2rem;
+      transition: border-color var(--trans), transform var(--trans), box-shadow var(--trans);
+      position: relative; overflow: hidden;
+      cursor: default;
+      box-shadow: var(--shadow-sm);
+    }
+    .card::after {
+      content: '';
+      position: absolute; top: 0; left: 0; right: 0; height: 3px;
+      border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+      background: linear-gradient(90deg, var(--navy), var(--mint-dark));
+      opacity: 0; transition: opacity var(--trans);
+    }
+    .card:hover {
+      border-color: rgba(37,69,94,.22);
+      transform: translateY(-6px);
+      box-shadow: var(--shadow-lg);
+    }
+    .card:hover::after { opacity: 1; }
+
+    .card-icon {
+      width: 52px; height: 52px;
+      background: var(--mint-pale); border-radius: 16px;
+      display: flex; align-items: center; justify-content: center;
+      margin-bottom: 1.4rem; font-size: 1.4rem;
+      border: 1.5px solid rgba(168,198,192,.4);
+      transition: background var(--trans), transform var(--trans);
+    }
+    .card:hover .card-icon { background: rgba(168,198,192,.3); transform: scale(1.05); }
+    .card h3 {
+      font-family: var(--font-heading); font-weight: 700;
+      font-size: 1.15rem; margin-bottom: .7rem; color: var(--navy-deeper);
+    }
+    .card p { color: var(--text-secondary); font-size: .9rem; line-height: 1.75; }
+
+    .card-accent {
+      position: absolute; top: 1rem; right: 1.6rem;
+      font-family: var(--font-accent); font-size: 4.5rem; font-weight: 900;
+      color: rgba(37,69,94,.04); line-height: 1; pointer-events: none;
+    }
+
+    /* ── CASES / CAROUSEL ────────────────────────────────────── */
+    .cases-section { background: var(--bg-section); }
+    .cases-section .section-header {
+      display: flex; justify-content: space-between; align-items: flex-end;
+      margin-bottom: 3rem; flex-wrap: wrap; gap: 1.5rem;
+    }
+
+    /* Carousel wrapper */
+    .carousel-wrapper {
+      position: relative;
+    }
+    .carousel-track-outer {
+      overflow: hidden; border-radius: var(--radius-lg);
+    }
+    .cases-track {
+      display: flex;
+      gap: 1.5rem;
+      transition: transform 0.55s cubic-bezier(.4,0,.2,1);
+      will-change: transform;
+    }
+
+    .case-card {
+      background: var(--bg-section);
+      border: 1.5px solid var(--border-light); border-radius: 20px;
+      padding: 2.2rem;
+      transition: border-color var(--trans), transform var(--trans), box-shadow var(--trans);
+      position: relative; overflow: hidden;
+      flex: 0 0 calc((100% - 3rem) / 3);
+      min-width: 0;
+      box-shadow: var(--shadow-sm);
+      cursor: default;
+    }
+    .case-card::before {
+      content: '';
+      position: absolute; top: 0; left: 0; right: 0; height: 3px;
+      background: linear-gradient(90deg, var(--mint-dark), transparent);
+      border-radius: 20px 20px 0 0;
+      opacity: 0; transition: opacity var(--trans);
+    }
+    .case-card:hover {
+      border-color: rgba(168,198,192,.5);
+      transform: translateY(-5px);
+      box-shadow: var(--shadow-md);
+    }
+    .case-card:hover::before { opacity: 1; }
+
+    .case-tag {
+      display: inline-block; background: var(--mint-pale);
+      color: var(--mint-dark); padding: .28rem .85rem; border-radius: 100px;
+      font-size: .7rem; font-weight: 700; letter-spacing: .06em; margin-bottom: 1rem;
+      border: 1px solid rgba(168,198,192,.4);
+      text-transform: uppercase;
+    }
+    .case-card h3 {
+      font-family: var(--font-heading); font-weight: 700;
+      font-size: 1rem; margin-bottom: .75rem; line-height: 1.45; color: var(--navy-deeper);
+    }
+    .case-card p { color: var(--text-secondary); font-size: .875rem; line-height: 1.7; }
+    .case-saving {
+      margin-top: 1.3rem; padding-top: 1.3rem;
+      border-top: 1.5px solid var(--border-light);
+      display: flex; align-items: center; gap: .45rem;
+      color: var(--gold); font-weight: 700; font-size: .85rem;
+    }
+    .case-saving-icon { color: var(--gold); font-size: .9rem; }
+
+    /* Carousel CTA card */
+    .case-card--cta {
+      background: linear-gradient(145deg, var(--navy) 0%, var(--navy-dark) 100%);
+      border-color: transparent;
+    }
+    .case-card--cta .case-tag {
+      background: rgba(168,198,192,.2); color: var(--mint-light);
+      border-color: rgba(168,198,192,.3);
+    }
+    .case-card--cta h3 { color: var(--white); }
+    .case-card--cta p { color: rgba(255,255,255,.65); }
+    .case-card--cta .case-saving { color: var(--mint-light); border-top-color: rgba(255,255,255,.1); }
+    .case-card--cta .case-saving a { color: inherit; text-decoration: none; }
+    .case-card--cta:hover { transform: translateY(-5px); box-shadow: var(--shadow-lg); }
+    .case-card--cta::before { background: linear-gradient(90deg, var(--mint-dark), transparent); }
+
+    /* Carousel controls */
+    .carousel-controls {
+      display: flex; align-items: center; justify-content: center;
+      margin-top: 2.2rem; gap: 1.2rem;
+    }
+    .carousel-btn {
+      width: 44px; height: 44px; border-radius: 50%;
+      background: var(--bg-section); border: 1.5px solid var(--border-mid);
+      color: var(--navy); font-size: 1rem;
+      display: flex; align-items: center; justify-content: center;
+      cursor: pointer;
+      transition: background var(--trans), border-color var(--trans), transform var(--trans), box-shadow var(--trans);
+      box-shadow: var(--shadow-sm);
+    }
+    .carousel-btn:hover {
+      background: var(--navy); color: var(--white);
+      border-color: var(--navy);
+      transform: scale(1.05);
+      box-shadow: var(--shadow-md);
+    }
+    .carousel-btn:disabled {
+      opacity: .38; cursor: not-allowed;
+      transform: none; box-shadow: none;
+    }
+    .carousel-btn:disabled:hover { background: var(--bg-section); color: var(--navy); border-color: var(--border-mid); }
+
+    .carousel-dots {
+      display: flex; gap: .55rem; align-items: center;
+    }
+    .carousel-dot {
+      width: 8px; height: 8px; border-radius: 100px;
+      background: var(--border-mid); border: none; cursor: pointer;
+      transition: background var(--trans), width var(--trans);
+      padding: 0;
+    }
+    .carousel-dot.active {
+      background: var(--navy); width: 22px;
+    }
+
+    /* ── NO CURE NO PAY ─────────────────────────────────────── */
+    .ncnp {
+      background: linear-gradient(145deg, var(--navy) 0%, var(--navy-dark) 100%);
+      text-align: center; padding: 90px 5vw;
+      position: relative; overflow: hidden;
+    }
+    .ncnp::before {
+      content: '';
+      position: absolute; inset: 0;
+      background: radial-gradient(ellipse 65% 80% at 50% 50%, rgba(200,168,62,.08) 0%, transparent 70%);
+    }
+    .ncnp::after {
+      content: '';
+      position: absolute; inset: 0;
+      background-image:
+        linear-gradient(rgba(168,198,192,.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(168,198,192,.03) 1px, transparent 1px);
+      background-size: 60px 60px;
+    }
+    .ncnp > * { position: relative; z-index: 1; }
+    .ncnp .section-tag { color: var(--mint); }
+    .ncnp .section-tag::before { background: var(--mint); }
+    .ncnp h2 {
+      font-size: clamp(2.2rem, 4.5vw, 3.6rem);
+      color: var(--white);
+    }
+    .ncnp h2 em { color: var(--gold); }
+    .ncnp p {
+      color: rgba(255,255,255,.65);
+      max-width: 600px; margin: 1.2rem auto 0;
+      line-height: 1.8; font-size: 1.05rem;
+    }
+    .ncnp .btn-ncnp {
+      margin-top: 2.6rem; display: inline-block;
+      background: var(--gold); color: var(--navy-deeper);
+      padding: .95rem 2.4rem; border-radius: 100px;
+      font-weight: 700; font-size: 1rem; text-decoration: none;
+      font-family: var(--font-body);
+      transition: background var(--trans), transform var(--trans), box-shadow var(--trans);
+      box-shadow: 0 4px 20px rgba(200,168,62,.35);
+    }
+    .ncnp .btn-ncnp:hover {
+      background: var(--gold-light);
+      transform: translateY(-3px);
+      box-shadow: 0 10px 34px rgba(200,168,62,.45);
+    }
+
+    /* ── CONTACT ─────────────────────────────────────────────── */
+    .contact-section { background: var(--bg-alt); }
+    .contact-grid {
+      display: grid; grid-template-columns: 1fr 1.15fr;
+      gap: 5rem; margin-top: 4rem; align-items: start;
+    }
+
+    .contact-info-label {
+      font-family: var(--font-heading); font-weight: 700; font-size: .75rem;
+      color: var(--text-muted); margin-bottom: 1.4rem;
+      letter-spacing: .1em; text-transform: uppercase;
+    }
+
+    .partner-card {
+      background: var(--bg-section); border: 1.5px solid var(--border-light);
+      border-radius: 18px; padding: 1.5rem;
+      display: flex; gap: 1.2rem; align-items: center;
+      margin-bottom: .85rem;
+      transition: border-color var(--trans), transform var(--trans), box-shadow var(--trans);
+      box-shadow: var(--shadow-sm);
+    }
+    .partner-card:hover {
+      border-color: rgba(37,69,94,.25);
+      transform: translateX(4px);
+      box-shadow: var(--shadow-md);
+    }
+    .partner-avatar {
+      width: 52px; height: 52px; border-radius: 50%;
+      background: linear-gradient(135deg, var(--navy), var(--mid-blue));
+      border: 2px solid rgba(37,69,94,.2);
+      display: flex; align-items: center; justify-content: center;
+      font-family: var(--font-heading); font-weight: 800; font-size: 1rem;
+      color: var(--white); flex-shrink: 0;
+    }
+    .partner-info h4 { font-family: var(--font-heading); font-weight: 700; color: var(--navy-deeper); font-size: .95rem; }
+    .partner-info span { color: var(--text-muted); font-size: .8rem; }
+    .partner-links { display: flex; gap: .8rem; margin-top: .45rem; }
+    .partner-link {
+      color: var(--navy); font-size: .8rem; font-weight: 600; text-decoration: none;
+      transition: color var(--trans);
+    }
+    .partner-link:hover { color: var(--mint-dark); }
+
+    .contact-details { margin-top: 2rem; }
+    .contact-row {
+      display: flex; gap: 1.1rem; align-items: center;
+      padding: 1rem 0; border-bottom: 1px solid var(--border-light);
+      color: var(--text-secondary); font-size: .9rem;
+    }
+    .contact-row:last-child { border-bottom: none; }
+    .contact-row strong { color: var(--text-primary); font-weight: 600; }
+    .contact-icon { font-size: 1rem; width: 22px; }
+
+    /* ── CONTACT FORM ────────────────────────────────────────── */
+    .form-card {
+      background: var(--bg-section);
+      border: 1.5px solid var(--border-light); border-radius: var(--radius-lg); padding: 2.8rem;
+      box-shadow: var(--shadow-md);
+    }
+    .form-card h3 {
+      font-family: var(--font-heading); font-weight: 700;
+      margin-bottom: 1.8rem; font-size: 1.3rem; color: var(--navy-deeper);
+    }
+    .form-group { margin-bottom: 1.2rem; }
+    .form-group label {
+      display: block; font-size: .72rem; font-weight: 700;
+      color: var(--text-muted); letter-spacing: .07em;
+      text-transform: uppercase; margin-bottom: .5rem;
+    }
+    .form-group input,
+    .form-group textarea,
+    .form-group select {
+      width: 100%;
+      background: var(--bg-alt); border: 1.5px solid var(--border-mid);
+      border-radius: var(--radius); padding: .88rem 1.1rem;
+      color: var(--text-primary); font-family: var(--font-body); font-size: .95rem;
+      outline: none;
+      transition: border-color var(--trans), background var(--trans), box-shadow var(--trans);
+      appearance: none;
+    }
+    .form-group input::placeholder,
+    .form-group textarea::placeholder { color: var(--text-muted); }
+    .form-group input:focus,
+    .form-group textarea:focus,
+    .form-group select:focus {
+      border-color: var(--navy);
+      background: var(--bg-section);
+      box-shadow: 0 0 0 3px rgba(37,69,94,.1);
+    }
+    .form-group textarea { resize: vertical; min-height: 120px; }
+    .form-group select option { background: var(--bg-section); color: var(--text-primary); }
+    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+    .form-submit {
+      width: 100%; padding: 1.05rem; border: none; border-radius: 100px;
+      background: var(--navy); color: var(--white);
+      font-family: var(--font-body); font-size: 1rem; font-weight: 700;
+      cursor: pointer;
+      transition: background var(--trans), transform var(--trans), box-shadow var(--trans);
+      margin-top: .4rem;
+      box-shadow: 0 4px 16px rgba(37,69,94,.22);
+    }
+    .form-submit:hover {
+      background: var(--navy-dark);
+      transform: translateY(-2px);
+      box-shadow: 0 8px 28px rgba(37,69,94,.3);
+    }
+
+    /* ── FOOTER ─────────────────────────────────────────────── */
+    footer {
+      background: var(--navy-deeper);
+      padding: 68px 5vw 40px;
+    }
+    .footer-top {
+      display: flex; justify-content: space-between; flex-wrap: wrap;
+      gap: 3rem; margin-bottom: 3.5rem;
+    }
+    .footer-brand .logo { color: var(--white); font-size: 1.4rem; }
+    .footer-brand .logo-c2 { color: var(--white); }
+    .footer-brand .logo-value { color: var(--gold); }
+    .footer-brand p {
+      color: rgba(255,255,255,.42); font-size: .875rem;
+      line-height: 1.7; max-width: 270px; margin-top: .8rem;
+    }
+    .footer-col h4 {
+      font-family: var(--font-heading); font-weight: 700; font-size: .75rem;
+      color: rgba(255,255,255,.7); letter-spacing: .1em; text-transform: uppercase;
+      margin-bottom: 1.1rem;
+    }
+    .footer-col ul { list-style: none; display: flex; flex-direction: column; gap: .6rem; }
+    .footer-col ul li a {
+      color: rgba(255,255,255,.42); text-decoration: none; font-size: .875rem;
+      transition: color var(--trans);
+    }
+    .footer-col ul li a:hover { color: var(--mint); }
+    .footer-bottom {
+      display: flex; justify-content: space-between; align-items: center;
+      flex-wrap: wrap; gap: 1rem; padding-top: 2rem;
+      border-top: 1px solid rgba(255,255,255,.08);
+      color: rgba(255,255,255,.32); font-size: .8rem;
+    }
+    .social-links { display: flex; gap: .85rem; }
+    .social-link {
+      width: 38px; height: 38px; border-radius: 50%;
+      border: 1.5px solid rgba(255,255,255,.15);
+      display: flex; align-items: center; justify-content: center;
+      color: rgba(255,255,255,.42); text-decoration: none; font-size: .82rem;
+      transition: border-color var(--trans), color var(--trans), background var(--trans), transform var(--trans);
+    }
+    .social-link:hover {
+      border-color: var(--mint); color: var(--mint);
+      background: rgba(168,198,192,.1); transform: translateY(-2px);
+    }
+
+    /* ── SCROLL REVEAL ──────────────────────────────────────── */
+    .reveal {
+      opacity: 0; transform: translateY(36px);
+      transition: opacity .8s cubic-bezier(.22,1,.36,1), transform .8s cubic-bezier(.22,1,.36,1);
+    }
+    .reveal.visible { opacity: 1; transform: none; }
+
+    .reveal-stagger > * {
+      opacity: 0; transform: translateY(28px);
+      transition: opacity .7s cubic-bezier(.22,1,.36,1), transform .7s cubic-bezier(.22,1,.36,1);
+    }
+    .reveal-stagger.visible > *:nth-child(1) { opacity: 1; transform: none; transition-delay: 0s; }
+    .reveal-stagger.visible > *:nth-child(2) { opacity: 1; transform: none; transition-delay: .1s; }
+    .reveal-stagger.visible > *:nth-child(3) { opacity: 1; transform: none; transition-delay: .18s; }
+    .reveal-stagger.visible > *:nth-child(4) { opacity: 1; transform: none; transition-delay: .26s; }
+    .reveal-stagger.visible > *:nth-child(5) { opacity: 1; transform: none; transition-delay: .34s; }
+    .reveal-stagger.visible > *:nth-child(6) { opacity: 1; transform: none; transition-delay: .42s; }
+
+    .reveal-left {
+      opacity: 0; transform: translateX(-40px);
+      transition: opacity .9s cubic-bezier(.22,1,.36,1), transform .9s cubic-bezier(.22,1,.36,1);
+    }
+    .reveal-left.visible { opacity: 1; transform: none; }
+    .reveal-right {
+      opacity: 0; transform: translateX(40px);
+      transition: opacity .9s cubic-bezier(.22,1,.36,1), transform .9s cubic-bezier(.22,1,.36,1);
+    }
+    .reveal-right.visible { opacity: 1; transform: none; }
+
+    /* ── MOBILE NAV ─────────────────────────────────────────── */
+    .mobile-nav {
+      display: none; position: fixed; inset: 0; z-index: 99;
+      background: rgba(255,255,255,0.98);
+      padding: 100px 5vw 5vw;
+      flex-direction: column; gap: 1.2rem;
+      backdrop-filter: blur(20px);
+    }
+    .mobile-nav.open { display: flex; animation: slideDown .3s ease; }
+    @keyframes slideDown {
+      from { opacity: 0; transform: translateY(-10px); }
+      to   { opacity: 1; transform: none; }
+    }
+    .mobile-nav a {
+      color: var(--navy-deeper); text-decoration: none;
+      font-family: var(--font-heading); font-size: 1.5rem; font-weight: 700;
+      border-bottom: 1px solid var(--border-light); padding-bottom: 1rem;
+      transition: color var(--trans);
+    }
+    .mobile-nav a:hover { color: var(--gold); }
+    .mobile-nav a:last-child { border: none; }
+
+    /* ── PARALLAX SHAPES ────────────────────────────────────── */
+    .float-shape {
+      position: fixed; pointer-events: none; z-index: 0; border-radius: 50%;
+      opacity: .03; will-change: transform;
+    }
+    .float-shape-1 { width: 500px; height: 500px; background: var(--navy); top: 10vh; left: -15vw; }
+    .float-shape-2 { width: 350px; height: 350px; background: var(--mint-dark); top: 60vh; right: -10vw; }
+
+    /* ── RESPONSIVE ─────────────────────────────────────────── */
+    @media (max-width: 1024px) {
+      .case-card { flex: 0 0 calc((100% - 1.5rem) / 2); }
+    }
+    @media (max-width: 900px) {
+      .nav-links { display: none; }
+      .hamburger { display: flex; }
+      .approach-grid,
+      .contact-grid { grid-template-columns: 1fr; gap: 3rem; }
+      .focus-cards { grid-template-columns: 1fr 1fr; }
+      .form-row { grid-template-columns: 1fr; }
+      .hero-content { max-width: 100%; }
+      .cursor-dot, .cursor-ring { display: none; }
+    }
+    @media (max-width: 640px) {
+      h1 { font-size: 2.5rem; }
+      section { padding: 70px 5vw; }
+      .footer-top { flex-direction: column; }
+      .float-shape { display: none; }
+      .focus-cards { grid-template-columns: 1fr; }
+      .case-card { flex: 0 0 calc(100% - 1.5rem); }
+      .cases-section .section-header { flex-direction: column; align-items: flex-start; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- Cursor -->
+<div class="cursor-dot" id="cursorDot"></div>
+<div class="cursor-ring" id="cursorRing"></div>
+
+<!-- Progress bar -->
+<div class="progress-bar" id="progressBar"></div>
+
+<!-- Floating ambient shapes -->
+<div class="float-shape float-shape-1" id="shape1"></div>
+<div class="float-shape float-shape-2" id="shape2"></div>
+
+<!-- NAV -->
+<nav id="mainNav">
+  <a href="#" class="logo">
+    <span class="logo-c2">C2</span><span class="logo-value">Value</span><span class="logo-dot"></span>
+  </a>
+  <ul class="nav-links">
+    <li><a href="#aanpak">Aanpak</a></li>
+    <li><a href="#focusgebieden">Focusgebieden</a></li>
+    <li><a href="#cases">Cases</a></li>
+    <li><a href="#contact">Contact</a></li>
+  </ul>
+  <a href="#contact" class="nav-cta">Gratis kennismaking</a>
+  <div class="hamburger" id="hamburger" onclick="toggleMobileNav()">
+    <span></span><span></span><span></span>
+  </div>
+</nav>
+
+<!-- Mobile nav -->
+<div class="mobile-nav" id="mobileNav">
+  <a href="#aanpak"        onclick="closeMobileNav()">Aanpak</a>
+  <a href="#focusgebieden" onclick="closeMobileNav()">Focusgebieden</a>
+  <a href="#cases"         onclick="closeMobileNav()">Cases</a>
+  <a href="#contact"       onclick="closeMobileNav()">Contact</a>
+  <a href="#contact" class="btn-primary" style="text-align:center;margin-top:.5rem;" onclick="closeMobileNav()">Gratis kennismaking</a>
+</div>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-grid"></div>
+  <div class="hero-accent-line"></div>
+  <div class="hero-watermark">C2</div>
+  <div class="hero-content">
+    <div class="hero-badge">
+      <span class="hero-badge-dot"></span>
+      No Cure, No Pay
+    </div>
+    <h1>Transforming<br/><em>Costs</em> into<br/>Value</h1>
+    <p class="hero-sub">
+      C2Value realiseert aantoonbare procesverbeteringen en kostenbesparingen binnen operations, overhead en inkoop — volledig op basis van no cure, no pay.
+    </p>
+    <div class="hero-actions">
+      <a href="#contact" class="btn-primary">Maak een afspraak</a>
+      <a href="#aanpak"  class="btn-ghost">Bekijk onze aanpak</a>
+    </div>
+  </div>
+  <div class="scroll-hint">
+    <span class="scroll-line"></span>
+    Scroll om meer te ontdekken
+  </div>
+</section>
+
+<!-- STATS -->
+<div class="stats-bar reveal-stagger">
+  <div class="stat-item">
+    <div class="stat-number" data-target="120">0</div>
+    <div class="stat-label">Bedrijfsprocessen geoptimaliseerd</div>
+  </div>
+  <div class="stat-item">
+    <div class="stat-number" data-target="22" data-suffix="%">0%</div>
+    <div class="stat-label">Gemiddelde besparing</div>
+  </div>
+  <div class="stat-item">
+    <div class="stat-number" data-prefix="€" data-target="50" data-suffix="M+">€0</div>
+    <div class="stat-label">Euro bespaard voor klanten</div>
+  </div>
+  <div class="stat-item">
+    <div class="stat-number" data-target="9" data-suffix=".0">0</div>
+    <div class="stat-label">Klanttevredenheid (gemiddeld)</div>
+  </div>
+  <div class="stat-item">
+    <div class="stat-number" data-target="75">0</div>
+    <div class="stat-label">Trajecten succesvol afgerond</div>
+  </div>
+</div>
+
+<!-- AANPAK -->
+<section class="approach" id="aanpak">
+  <div class="reveal">
+    <span class="section-tag">Onze aanpak</span>
+    <h2>Van analyse tot<br/><em>aantoonbaar resultaat</em></h2>
+    <p class="section-intro">Wij begeleiden uw organisatie van het eerste analysemoment tot en met de volledige implementatie. Zonder risico — u betaalt pas als wij resultaat boeken.</p>
+  </div>
+  <div class="approach-grid">
+    <div class="steps reveal-left">
+      <div class="step">
+        <div class="step-num">01</div>
+        <div class="step-body">
+          <h3>Quickscan &amp; diagnose</h3>
+          <p>We brengen binnen twee weken de grootste kansen in uw organisatie in kaart via een onafhankelijke quickscan van processen, kosten en leveranciersstructuren.</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">02</div>
+        <div class="step-body">
+          <h3>Business case &amp; plan van aanpak</h3>
+          <p>Op basis van de diagnose stellen we een heldere business case op, inclusief besparingspotentieel, tijdlijn en aanpak. Transparant en meetbaar.</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">03</div>
+        <div class="step-body">
+          <h3>Implementatie &amp; begeleiding</h3>
+          <p>Onze consultants werken hands-on mee aan de implementatie van verbeteringen, zodat resultaten ook echt worden gerealiseerd.</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">04</div>
+        <div class="step-body">
+          <h3>Borging &amp; continuïteit</h3>
+          <p>Na afronding dragen we alle werkwijzen structureel over, zodat de besparingen duurzaam zijn geborgd in uw organisatie.</p>
+        </div>
+      </div>
+    </div>
+    <div class="approach-visual reveal-right">
+      <div class="visual-label">Onze expertise</div>
+      <span class="visual-tag">Inkoopoptimalisatie</span>
+      <span class="visual-tag">Procesherinrichting</span>
+      <span class="visual-tag">Leveranciersbeheer</span>
+      <span class="visual-tag">Cost reduction</span>
+      <span class="visual-tag">Overhead analyse</span>
+      <span class="visual-tag">Operations</span>
+      <span class="visual-tag">Contractmanagement</span>
+      <span class="visual-tag">Fusie-integratie</span>
+      <span class="visual-tag">Packaging optimalisatie</span>
+      <span class="visual-tag">Facility management</span>
+      <span class="visual-tag">Personeel &amp; inhuur</span>
+      <div class="track-record-box">
+        <div class="tr-label">Trackrecord</div>
+        <p>Wij werken voor zowel private als (semi-)publieke organisaties met een jaaromzet van €100M tot €750M.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOCUSGEBIEDEN -->
+<section id="focusgebieden" class="focusgebieden">
+  <div class="reveal">
+    <span class="section-tag">Focusgebieden</span>
+    <h2>Drie domeinen,<br/>één doel: <em>besparing</em></h2>
+    <p class="section-intro">C2Value is actief in drie complementaire domeinen waar de meeste besparingskansen liggen voor middelgrote organisaties.</p>
+  </div>
+  <div class="focus-cards reveal-stagger">
+    <div class="card">
+      <div class="card-accent">01</div>
+      <div class="card-icon">⚙️</div>
+      <h3>Operations</h3>
+      <p>Wij analyseren en optimaliseren uw operationele processen — van productie tot logistiek. Door inefficiënties weg te nemen en workflows te stroomlijnen realiseren we structurele kostenreductie.</p>
+    </div>
+    <div class="card">
+      <div class="card-accent">02</div>
+      <div class="card-icon">🏢</div>
+      <h3>Overhead</h3>
+      <p>Overhead is een van de meest onderschatte kostenposten. Wij brengen uw ondersteunende functies (HR, IT, facilitair, finance) in kaart en vinden aantoonbare ruimte voor besparing.</p>
+    </div>
+    <div class="card">
+      <div class="card-accent">03</div>
+      <div class="card-icon">🛒</div>
+      <h3>Inkoop</h3>
+      <p>Van leveranciersconsolidatie tot contractheronderhandeling en categoriemanagement: wij halen het maximale uit uw inkoopfunctie en verhogen tegelijkertijd de volwassenheid van uw inkooporganisatie.</p>
+    </div>
+  </div>
+</section>
+
+<!-- CASES / CAROUSEL -->
+<section class="cases-section" id="cases">
+  <div class="section-header reveal">
+    <div>
+      <span class="section-tag">Klantresultaten</span>
+      <h2>Bewezen resultaten<br/>bij uiteenlopende klanten</h2>
+      <p class="section-intro">Concrete voorbeelden van trajecten waarbij C2Value aantoonbare waarde heeft gecreëerd voor haar klanten.</p>
+    </div>
+  </div>
+
+  <div class="carousel-wrapper reveal">
+    <div class="carousel-track-outer" id="carouselOuter">
+      <div class="cases-track" id="casesTrack">
+
+        <div class="case-card">
+          <span class="case-tag">GGZ / Zorg</span>
+          <h3>€1M structurele kostenbesparing bij GGZ-instelling</h3>
+          <p>Door herinrichting van inkoopprocessen heeft de inkooporganisatie een meer volwassen karakter gekregen. De jaarlijkse structurele besparingsdoelstelling werd behaald, waardoor meer middelen beschikbaar kwamen voor kwalitatieve zorgverlening.</p>
+          <div class="case-saving"><span class="case-saving-icon">✦</span> €1.000.000 structurele besparing</div>
+        </div>
+
+        <div class="case-card">
+          <span class="case-tag">Industrie / Productie</span>
+          <h3>46% inkoopbesparing op gesteriliseerde slangen</h3>
+          <p>Na brainstormsessies met productievloer en Center of Expertise werd besloten bij eenvoudige toepassingen over te stappen op goedkopere rollevering. Duurdere kitlevering werd voorbehouden aan kritische processen.</p>
+          <div class="case-saving"><span class="case-saving-icon">✦</span> 46% besparing op productcategorie</div>
+        </div>
+
+        <div class="case-card">
+          <span class="case-tag">Kinderopvang / Fusie</span>
+          <h3>Proces- en inkoopoptimalisatie na fusie (600+ locaties)</h3>
+          <p>Twee kinderopvangorganisaties met meer dan 600 locaties fuseerden. C2Value begeleidde de optimalisatie van het aanvraag- en inhuurproces van extern personeel en andere gezamenlijke inkoopprocessen.</p>
+          <div class="case-saving"><span class="case-saving-icon">✦</span> Gestroomlijnd inhuurproces</div>
+        </div>
+
+        <div class="case-card">
+          <span class="case-tag">Vastgoed / Facilitair</span>
+          <h3>Consolidatie gebouwgebonden onderhoud na afsplitsing</h3>
+          <p>Na de afsplitsing van het moederbedrijf bundelde C2Value alle onderhoudsactiviteiten en selecteerde een externe dienstverlener. Meerjarenonderhoudsplannen en leveranciersstructuur werden volledig heringericht.</p>
+          <div class="case-saving"><span class="case-saving-icon">✦</span> Vereenvoudigd leverancierslandschap</div>
+        </div>
+
+        <div class="case-card">
+          <span class="case-tag">Farma / Verpakkingen</span>
+          <h3>Packaging-optimalisatie met behoud van kwaliteit</h3>
+          <p>Analyse en optimalisatie van secundaire (etiketten, doosjes, bijsluiters) en tertiaire verpakkingen (omdozen) bij een farmaceutisch bedrijf. Kwaliteitsgarantie bleef gedurende het gehele traject gewaarborgd.</p>
+          <div class="case-saving"><span class="case-saving-icon">✦</span> Significante kostenreductie verpakkingen</div>
+        </div>
+
+        <div class="case-card case-card--cta">
+          <span class="case-tag">Uw organisatie</span>
+          <h3>Wat kunnen we voor u betekenen?</h3>
+          <p>Elke organisatie heeft unieke kansen. Onze no cure, no pay aanpak betekent dat u zonder risico kunt ontdekken welke besparingen er voor uw organisatie mogelijk zijn.</p>
+          <div class="case-saving">
+            <a href="#contact">→ Vraag een gratis quickscan aan</a>
+          </div>
+        </div>
+
+      </div><!-- end cases-track -->
+    </div><!-- end carousel-track-outer -->
+
+    <div class="carousel-controls">
+      <button class="carousel-btn" id="btnPrev" aria-label="Vorige" onclick="carouselPrev()">&#8592;</button>
+      <div class="carousel-dots" id="carouselDots"></div>
+      <button class="carousel-btn" id="btnNext" aria-label="Volgende" onclick="carouselNext()">&#8594;</button>
+    </div>
+  </div>
+</section>
+
+<!-- NO CURE NO PAY -->
+<div class="ncnp reveal">
+  <span class="section-tag" style="justify-content:center;">Onze belofte</span>
+  <h2>U betaalt alleen als<br/>wij <em>resultaat</em> boeken</h2>
+  <p>Geen resultaat? Dan geen factuur. Dit is de kern van onze no cure, no pay werkwijze. Wij investeren onze tijd en kennis mee met u, zodat onze belangen volledig zijn uitgelijnd.</p>
+  <a href="#contact" class="btn-ncnp">Plan een vrijblijvende kennismaking</a>
+</div>
+
+<!-- CONTACT -->
+<section id="contact" class="contact-section">
+  <div class="reveal">
+    <span class="section-tag">Contact</span>
+    <h2>Kom in contact<br/>met ons team</h2>
+    <p class="section-intro">Benieuwd wat C2Value voor uw organisatie kan betekenen? Neem direct contact op of vraag een gratis quickscan aan.</p>
+  </div>
+  <div class="contact-grid">
+    <div class="contact-info reveal-left">
+      <div class="contact-info-label">Commercieel team</div>
+      <div class="partner-card">
+        <div class="partner-avatar">TT</div>
+        <div class="partner-info">
+          <h4>Tom Tempelman</h4>
+          <span>Commercieel Partner</span>
+          <div class="partner-links">
+            <a href="tel:0613134198" class="partner-link">📞 06-131 341 98</a>
+            <a href="mailto:tom.tempelman@c2value.com" class="partner-link">✉ Mail</a>
+          </div>
+        </div>
+      </div>
+      <div class="partner-card">
+        <div class="partner-avatar">LV</div>
+        <div class="partner-info">
+          <h4>Lars van der Veen</h4>
+          <span>Commercieel Partner</span>
+          <div class="partner-links">
+            <a href="tel:0614970220" class="partner-link">📞 06-149 702 20</a>
+            <a href="mailto:lars.vdveen@c2value.com" class="partner-link">✉ Mail</a>
+          </div>
+        </div>
+      </div>
+      <div class="contact-details">
+        <div class="contact-row">
+          <span class="contact-icon">📞</span>
+          <div>
+            <div style="color:var(--text-muted);font-size:.75rem;margin-bottom:.2rem;">Telefoon</div>
+            <strong>020-240 29 55</strong>
+          </div>
+        </div>
+        <div class="contact-row">
+          <span class="contact-icon">✉️</span>
+          <div>
+            <div style="color:var(--text-muted);font-size:.75rem;margin-bottom:.2rem;">E-mail</div>
+            <strong><a href="mailto:info@c2value.com" style="color:var(--text-primary);text-decoration:none;">info@c2value.com</a></strong>
+          </div>
+        </div>
+        <div class="contact-row">
+          <span class="contact-icon">📍</span>
+          <div>
+            <div style="color:var(--text-muted);font-size:.75rem;margin-bottom:.2rem;">Adres</div>
+            <strong>Joop Geesinkweg 801,<br/>1114 AB Amsterdam</strong>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="form-card reveal-right">
+      <h3>Stuur ons een bericht</h3>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Voornaam</label>
+          <input type="text" placeholder="Jan" />
+        </div>
+        <div class="form-group">
+          <label>Achternaam</label>
+          <input type="text" placeholder="de Vries" />
+        </div>
+      </div>
+      <div class="form-group">
+        <label>Organisatie</label>
+        <input type="text" placeholder="Naam van uw organisatie" />
+      </div>
+      <div class="form-group">
+        <label>E-mailadres</label>
+        <input type="email" placeholder="jan@bedrijf.nl" />
+      </div>
+      <div class="form-group">
+        <label>Jaaromzet organisatie</label>
+        <select>
+          <option value="">Selecteer een range</option>
+          <option>€10M – €50M</option>
+          <option>€50M – €100M</option>
+          <option>€100M – €250M</option>
+          <option>€250M – €500M</option>
+          <option>€500M – €750M</option>
+          <option>€750M+</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Bericht</label>
+        <textarea placeholder="Beschrijf kort uw vraagstuk of wens..."></textarea>
+      </div>
+      <button class="form-submit" onclick="handleSubmit(this)">Verstuur bericht →</button>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-top">
+    <div class="footer-brand">
+      <a href="#" class="logo">
+        <span class="logo-c2">C2</span><span class="logo-value">Value</span><span class="logo-dot"></span>
+      </a>
+      <p>Transforming Costs into Value. Expert op het gebied van inkoopbesparingen en procesoptimalisaties. No cure, no pay.</p>
+    </div>
+    <div class="footer-col">
+      <h4>Navigatie</h4>
+      <ul>
+        <li><a href="#aanpak">Aanpak</a></li>
+        <li><a href="#focusgebieden">Focusgebieden</a></li>
+        <li><a href="#cases">Cases</a></li>
+        <li><a href="#contact">Contact</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h4>Focusgebieden</h4>
+      <ul>
+        <li><a href="#focusgebieden">Operations</a></li>
+        <li><a href="#focusgebieden">Overhead</a></li>
+        <li><a href="#focusgebieden">Inkoop</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h4>Juridisch</h4>
+      <ul>
+        <li><a href="https://c2value.com/privacy-statement/">Privacybeleid</a></li>
+        <li><a href="https://c2value.com/cookiebeleid/">Cookies</a></li>
+        <li><a href="https://c2value.com/wp-content/uploads/2025/07/Algemene-Voorwaarden-C2Value-2025.pdf">Algemene Voorwaarden</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <span>© 2025 C2Value. Alle rechten voorbehouden.</span>
+    <div class="social-links">
+      <a href="https://www.linkedin.com/company/c2value/" class="social-link" target="_blank" title="LinkedIn">in</a>
+      <a href="https://www.youtube.com/@spendlabpi3430" class="social-link" target="_blank" title="YouTube">▶</a>
+      <a href="mailto:info@c2value.com" class="social-link" title="E-mail">✉</a>
+    </div>
+  </div>
+</footer>
+
+<script>
+// ── CUSTOM CURSOR ──────────────────────────────────────────
+const dot  = document.getElementById('cursorDot');
+const ring = document.getElementById('cursorRing');
+let mx = 0, my = 0, rx = 0, ry = 0;
+
+document.addEventListener('mousemove', (e) => {
+  mx = e.clientX; my = e.clientY;
+  dot.style.left  = mx + 'px';
+  dot.style.top   = my + 'px';
+});
+function animateRing() {
+  rx += (mx - rx) * 0.12;
+  ry += (my - ry) * 0.12;
+  ring.style.left = rx + 'px';
+  ring.style.top  = ry + 'px';
+  requestAnimationFrame(animateRing);
+}
+animateRing();
+document.querySelectorAll('a, button, .card, .case-card, .partner-card, .step').forEach(el => {
+  el.addEventListener('mouseenter', () => {
+    ring.style.width  = '52px';
+    ring.style.height = '52px';
+    ring.style.borderColor = 'rgba(37,69,94,.5)';
+  });
+  el.addEventListener('mouseleave', () => {
+    ring.style.width  = '34px';
+    ring.style.height = '34px';
+    ring.style.borderColor = 'rgba(37,69,94,.3)';
+  });
+});
+
+// ── SCROLL PROGRESS BAR ───────────────────────────────────
+const progressBar = document.getElementById('progressBar');
+function updateProgress() {
+  const scrolled = window.scrollY;
+  const total    = document.body.scrollHeight - window.innerHeight;
+  progressBar.style.width = (scrolled / total * 100) + '%';
+}
+window.addEventListener('scroll', updateProgress, { passive: true });
+
+// ── NAV SCROLL STATE ──────────────────────────────────────
+const nav = document.getElementById('mainNav');
+window.addEventListener('scroll', () => {
+  nav.classList.toggle('scrolled', window.scrollY > 60);
+}, { passive: true });
+
+// ── PARALLAX SHAPES ───────────────────────────────────────
+const shape1 = document.getElementById('shape1');
+const shape2 = document.getElementById('shape2');
+window.addEventListener('scroll', () => {
+  const y = window.scrollY;
+  if (shape1) shape1.style.transform = `translateY(${y * 0.07}px)`;
+  if (shape2) shape2.style.transform = `translateY(${-y * 0.05}px)`;
+}, { passive: true });
+
+// ── SCROLL REVEAL ─────────────────────────────────────────
+const revealEls = document.querySelectorAll('.reveal, .reveal-left, .reveal-right, .reveal-scale, .reveal-stagger');
+const revealObs = new IntersectionObserver((entries) => {
+  entries.forEach((e, i) => {
+    if (e.isIntersecting) {
+      setTimeout(() => e.target.classList.add('visible'), i * 60);
+      revealObs.unobserve(e.target);
+    }
+  });
+}, { threshold: 0.07, rootMargin: '0px 0px -40px 0px' });
+revealEls.forEach(r => revealObs.observe(r));
+
+// ── COUNT-UP ──────────────────────────────────────────────
+function animateCount(el) {
+  const target   = +el.dataset.target;
+  const prefix   = el.dataset.prefix  || '';
+  const suffix   = el.dataset.suffix  || '';
+  const duration = 1800;
+  const start    = performance.now();
+  function tick(now) {
+    const p    = Math.min((now - start) / duration, 1);
+    const ease = 1 - Math.pow(1 - p, 3);
+    el.textContent = prefix + Math.round(ease * target) + suffix;
+    if (p < 1) requestAnimationFrame(tick);
+  }
+  requestAnimationFrame(tick);
+}
+const statsBar  = document.querySelector('.stats-bar');
+const statsObs  = new IntersectionObserver((entries) => {
+  if (entries[0].isIntersecting) {
+    document.querySelectorAll('[data-target]').forEach(animateCount);
+    statsObs.disconnect();
+  }
+}, { threshold: 0.25 });
+statsObs.observe(statsBar);
+
+// ── MOBILE NAV ────────────────────────────────────────────
+function toggleMobileNav() { document.getElementById('mobileNav').classList.toggle('open'); }
+function closeMobileNav()  { document.getElementById('mobileNav').classList.remove('open'); }
+
+// ── FORM SUBMIT ───────────────────────────────────────────
+function handleSubmit(btn) {
+  btn.textContent = '✓ Bericht verstuurd!';
+  btn.style.background = 'var(--mint-dark)';
+  btn.disabled = true;
+  setTimeout(() => {
+    btn.textContent = 'Verstuur bericht →';
+    btn.style.background = '';
+    btn.disabled = false;
+  }, 3500);
+}
+
+// ── VISUAL TAGS STAGGER ───────────────────────────────────
+const visualCard = document.querySelector('.approach-visual');
+const tags       = visualCard ? visualCard.querySelectorAll('.visual-tag') : [];
+if (tags.length) {
+  const tagsObs = new IntersectionObserver((entries) => {
+    if (entries[0].isIntersecting) {
+      tags.forEach((tag, i) => {
+        tag.style.opacity   = '0';
+        tag.style.transform = 'translateY(10px)';
+        tag.style.transition = `opacity .5s ${i * .05}s ease, transform .5s ${i * .05}s ease`;
+        setTimeout(() => {
+          tag.style.opacity   = '1';
+          tag.style.transform = 'none';
+        }, 50);
+      });
+      tagsObs.disconnect();
+    }
+  }, { threshold: 0.2 });
+  tagsObs.observe(visualCard);
+}
+
+// ── CAROUSEL ─────────────────────────────────────────────
+(function() {
+  const track       = document.getElementById('casesTrack');
+  const outer       = document.getElementById('carouselOuter');
+  const dotsEl      = document.getElementById('carouselDots');
+  const btnPrev     = document.getElementById('btnPrev');
+  const btnNext     = document.getElementById('btnNext');
+
+  if (!track) return;
+
+  const cards       = Array.from(track.querySelectorAll('.case-card'));
+  const totalCards  = cards.length;
+  let currentIndex  = 0;
+  let visibleCount  = 3;
+  let cardWidth     = 0;
+  let gap           = 24;
+
+  function getVisibleCount() {
+    const w = window.innerWidth;
+    if (w <= 640) return 1;
+    if (w <= 1024) return 2;
+    return 3;
+  }
+
+  function getMaxIndex() {
+    return Math.max(0, totalCards - visibleCount);
+  }
+
+  function buildDots() {
+    dotsEl.innerHTML = '';
+    const numDots = getMaxIndex() + 1;
+    for (let i = 0; i < numDots; i++) {
+      const d = document.createElement('button');
+      d.className = 'carousel-dot' + (i === currentIndex ? ' active' : '');
+      d.setAttribute('aria-label', `Ga naar ${i + 1}`);
+      d.addEventListener('click', () => goTo(i));
+      dotsEl.appendChild(d);
+    }
+  }
+
+  function updateDots() {
+    const dots = dotsEl.querySelectorAll('.carousel-dot');
+    dots.forEach((d, i) => d.classList.toggle('active', i === currentIndex));
+  }
+
+  function computeCardWidth() {
+    const outerW = outer.getBoundingClientRect().width;
+    cardWidth = (outerW - gap * (visibleCount - 1)) / visibleCount;
+    // Set each card width explicitly
+    cards.forEach(c => {
+      c.style.flex = `0 0 ${cardWidth}px`;
+      c.style.minWidth = `${cardWidth}px`;
+    });
+    // Set track gap
+    track.style.gap = gap + 'px';
+  }
+
+  function updateButtons() {
+    btnPrev.disabled = currentIndex <= 0;
+    btnNext.disabled = currentIndex >= getMaxIndex();
+  }
+
+  function goTo(index) {
+    currentIndex = Math.max(0, Math.min(index, getMaxIndex()));
+    const offset = currentIndex * (cardWidth + gap);
+    track.style.transform = `translateX(-${offset}px)`;
+    updateDots();
+    updateButtons();
+  }
+
+  function init() {
+    visibleCount = getVisibleCount();
+    computeCardWidth();
+    buildDots();
+    goTo(currentIndex);
+  }
+
+  window.carouselPrev = () => goTo(currentIndex - 1);
+  window.carouselNext = () => goTo(currentIndex + 1);
+
+  // Touch / swipe support
+  let touchStartX = 0;
+  let touchStartY = 0;
+  let isDragging  = false;
+
+  outer.addEventListener('touchstart', e => {
+    touchStartX = e.touches[0].clientX;
+    touchStartY = e.touches[0].clientY;
+    isDragging = false;
+  }, { passive: true });
+
+  outer.addEventListener('touchmove', e => {
+    const dx = e.touches[0].clientX - touchStartX;
+    const dy = e.touches[0].clientY - touchStartY;
+    if (!isDragging && Math.abs(dx) > Math.abs(dy) && Math.abs(dx) > 8) {
+      isDragging = true;
+    }
+  }, { passive: true });
+
+  outer.addEventListener('touchend', e => {
+    if (!isDragging) return;
+    const dx = e.changedTouches[0].clientX - touchStartX;
+    if (Math.abs(dx) > 40) {
+      if (dx < 0) carouselNext();
+      else carouselPrev();
+    }
+  });
+
+  // Keyboard navigation
+  document.addEventListener('keydown', e => {
+    const section = document.getElementById('cases');
+    const rect    = section ? section.getBoundingClientRect() : null;
+    if (rect && rect.top < window.innerHeight && rect.bottom > 0) {
+      if (e.key === 'ArrowLeft')  carouselPrev();
+      if (e.key === 'ArrowRight') carouselNext();
+    }
+  });
+
+  // Recalculate on resize
+  let resizeTimer;
+  window.addEventListener('resize', () => {
+    clearTimeout(resizeTimer);
+    resizeTimer = setTimeout(() => {
+      const newVisible = getVisibleCount();
+      if (newVisible !== visibleCount) {
+        visibleCount = newVisible;
+        currentIndex = 0;
+      }
+      computeCardWidth();
+      buildDots();
+      goTo(currentIndex);
+    }, 150);
+  });
+
+  init();
+})();
+</script>
+</body>
+</html>
