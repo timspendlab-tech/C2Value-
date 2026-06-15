@@ -3001,7 +3001,7 @@
           <div class="algo-row algo-row--highlight" id="algoRowInkoop">
             <span class="algo-row-label">Inkoopkosten</span>
             <span class="algo-row-val">€ 113.400.000</span>
-            <span class="algo-row-delta algo-warn" id="algoWarnInkoop">⚠ −€ 6,8M</span>
+            <span class="algo-row-delta algo-warn" id="algoWarnInkoop">⚠ −€ 2,3M</span>
           </div>
           <div class="algo-row">
             <span class="algo-row-label">Personeelskosten</span>
@@ -3009,14 +3009,14 @@
             <span class="algo-row-delta algo-ok">✓</span>
           </div>
           <div class="algo-row algo-row--highlight" id="algoRowOverhead">
-            <span class="algo-row-label">Overhead / Facilitair</span>
+            <span class="algo-row-label">Externe inhuur</span>
             <span class="algo-row-val">€ 18.900.000</span>
-            <span class="algo-row-delta algo-warn" id="algoWarnOverhead">⚠ −€ 2,1M</span>
+            <span class="algo-row-delta algo-warn" id="algoWarnOverhead">⚠ −€ 1,2M</span>
           </div>
           <div class="algo-row algo-row--result">
             <span class="algo-row-label">EBITDA (na correctie)</span>
-            <span class="algo-row-val algo-green" id="algoEbitda">€ 59.500.000</span>
-            <span class="algo-row-delta algo-green">↑ +€ 8,9M</span>
+            <span class="algo-row-val algo-green" id="algoEbitda">€ 54.100.000</span>
+            <span class="algo-row-delta algo-green">↑ +€ 3,5M</span>
           </div>
         </div>
       </div>
@@ -3035,9 +3035,9 @@
             <div class="algo-balance-sub">facturen geanalyseerd</div>
           </div>
           <div class="algo-balance-block algo-balance-block--gold">
-            <div class="algo-balance-label">Dubbel betaald</div>
+            <div class="algo-balance-label">Foutieve facturen</div>
             <div class="algo-balance-val" id="algoDoublePay">0</div>
-            <div class="algo-balance-sub">facturen gevonden</div>
+            <div class="algo-balance-sub">te corrigeren</div>
           </div>
           <div class="algo-balance-block">
             <div class="algo-balance-label">BTW-correcties</div>
@@ -3077,26 +3077,12 @@
           <h4>Verborgen kostenreductie op P&amp;L</h4>
           <p>Ons algoritme vergelijkt uw inkoopposten regel voor regel met marktbenchmarks en historische contractprijzen. Afwijkingen worden direct gemarkeerd — zo identificeren wij gemiddeld <strong>18–28%</strong> besparingspotentieel op inkoopkosten.</p>
           <div class="algo-tooltip-kpi">
-            <span class="algo-kpi-num">€ 680K</span>
+            <span class="algo-kpi-num">€ 3,5M</span>
             <span class="algo-kpi-lbl">gevonden op P&amp;L</span>
           </div>
         </div>
       </div>
 
-      <div class="algo-tooltip-card reveal-right" style="--delay:0.2s">
-        <div class="algo-tooltip-icon" style="background:rgba(37,69,94,.1);border-color:rgba(37,69,94,.25);">
-          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#25455E" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
-        </div>
-        <div class="algo-tooltip-body">
-          <div class="algo-tooltip-tag">Balans analyse</div>
-          <h4>Dubbele betalingen uit het verleden</h4>
-          <p>Via patroonherkenning op IBAN, referentienummer en bedrag detecteert ons systeem facturen die meerdere keren zijn voldaan — soms over meerdere jaren. Het gevonden bedrag is direct terugvorderbaar van uw leveranciers.</p>
-          <div class="algo-tooltip-kpi">
-            <span class="algo-kpi-num">23 facturen</span>
-            <span class="algo-kpi-lbl">dubbel betaald gedetecteerd</span>
-          </div>
-        </div>
-      </div>
 
       <div class="algo-tooltip-card reveal-right" style="--delay:0.3s">
         <div class="algo-tooltip-icon" style="background:rgba(122,171,163,.15);border-color:rgba(122,171,163,.4);">
@@ -3120,7 +3106,7 @@
         <div class="algo-tooltip-body">
           <div class="algo-tooltip-tag">Contract compliance</div>
           <h4>Worden contracten wel nageleefd?</h4>
-          <p>Wij toetsen systematisch of afgesproken condities daadwerkelijk worden toegepast. Denk aan <strong>indexaties, bonussen, tarieven</strong> en overige contractuele afspraken — zodat u krijgt waar u recht op heeft.</p>
+          <p>Wij toetsen systematisch of afgesproken condities daadwerkelijk worden toegepast. Denk aan <strong>indexaties, bonussen, tarieven, facturatie</strong>  en overige contractuele afspraken — zodat u krijgt waar u recht op heeft.</p>
           <div class="algo-tooltip-kpi">
             <span class="algo-kpi-num">100%</span>
             <span class="algo-kpi-lbl">contract controle</span>
@@ -3987,7 +3973,7 @@ if (tags.length) {
         animateProgress();
         animateRows();
         animateCounter(document.getElementById('algoOpenPosten'), 847, 5000);
-        animateCounter(document.getElementById('algoDoublePay'), 23, 5000);
+        animateCounter(document.getElementById('algoDoublePay'), 34, 5000);
         animateCounter(document.getElementById('algoBtw'), 12, 5000);
         animateCounterEuro(document.getElementById('algoTerug'), 147, 5000);
       }
